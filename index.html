@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<!-- ============================================================
+     BUILD: aligned-cards-v3
+     Check you have the right file: press Ctrl+F (Cmd+F on Mac)
+     in your text editor and search for  aligned-cards-v3
+     If you cannot find it, you are looking at an older download.
+     ============================================================ -->
 <html lang="en" class="no-js">
 <head>
 <script>document.documentElement.className = 'js';</script>
@@ -1183,6 +1189,23 @@ body[data-scene="hero"] .cue{ opacity:.8; }
   position:relative;
   transition: transform .5s cubic-bezier(.2,.8,.25,1), opacity .4s ease;
 }
+/* ---- ALIGNED ROTATION ----
+   These three values decide how the line of cards turns. They are
+   forced from here so nothing else on the page can scatter them.
+   Change them here and nowhere else.
+
+     --rest   angle a card sits at when still.  0deg = upright.
+     --spin   how long one full turn takes.  Lower = faster.
+     --sd     delay before a card starts turning.  0s = together.
+
+   Every card is given the identical value, so they turn as one.
+   Giving them different values is what breaks the formation. */
+.cw-slot{
+  --rest: 0deg !important;
+  --spin: 5s   !important;
+  --sd:   0s   !important;
+}
+
 .cw-inner{
   transform: rotate(var(--rest, 0deg));
   transition: transform .5s cubic-bezier(.2,.8,.25,1);
@@ -1195,7 +1218,13 @@ body[data-scene="hero"] .cue{ opacity:.8; }
   box-shadow: 0 14px 30px rgba(25,26,28,.18), 0 2px 6px rgba(25,26,28,.10);
   transition: box-shadow .4s ease;
 }
-.cw-card img{ display:block; width:100%; height:100%; object-fit:cover; }
+/* the image sits above the placeholder poster, so if a file is
+   missing or misspelled the poster shows through instead of a
+   broken-image icon */
+.cw-card img{
+  display:block; width:100%; height:100%; object-fit:cover;
+  position:relative; z-index:1;
+}
 
 /* hovering the line sets every card turning */
 @keyframes cwSpin{
@@ -1209,8 +1238,8 @@ body[data-scene="hero"] .cue{ opacity:.8; }
 
 /* held: this one straightens, rises and grows. The rest carry on. */
 .cw-slot.is-held{ z-index:30; }
-.cw-slot.is-held .cw-inner{ animation:none; transform: rotate(0deg); }
-.cw-slot.is-held .cw-lift{ transform: translateY(calc(-1 * var(--cw-rise))) scale(1.75); }
+.cw-slot.is-held .cw-inner{ animation:none !important; transform: rotate(0deg); }
+.cw-slot.is-held .cw-lift{ transform: translateY(calc(-1 * var(--cw-rise))) scale(2); }
 .cw-slot.is-held .cw-card{ box-shadow: 0 50px 92px rgba(25,26,28,.34); }
 .creative.cw-holding .cw-slot:not(.is-held) .cw-lift{ opacity:.48; }
 
@@ -2388,8 +2417,9 @@ html.no-js .cw-rail{ display:none; }
       played in reverse: each card is offset to the gathering point
       by a measured delta, and releasing that delta is the spread.
    3. Hovering the line sets every card turning.
-   4. Press and hold one: it straightens, rises and grows, while
-      the rest keep turning. Let go and it drops back into place.
+   4. Point at one card: it stops turning, straightens, rises and
+      grows, while the rest keep turning. Move away and it drops
+      back into the line. On a phone, tap instead of hover.
    ------------------------------------------------------------ */
 (function () {
   const sec = document.querySelector('.creative');
@@ -2401,22 +2431,38 @@ html.no-js .cw-rail{ display:none; }
 
   /* ============================================================
      YOUR ARTWORK GOES HERE.
-     Drop your files next to this page and fill in `src`, e.g.
-       { title:'Dusit Thani Abu Dhabi', kind:'Gift voucher',
-         src:'work/dusit-voucher.jpg' }
-     Any entry left with an empty `src` draws a placeholder poster
-     instead, so the line always reads as a full set while you
-     collect the files. Portrait images (3:4) sit best.
+
+     Each `src` below points at a file inside a folder called
+     `work`, sitting beside this page. So your repository looks
+     like this:
+
+       index.html
+       work/
+         dusit-voucher.jpg
+         dubai-jordan.jpg
+         ... and so on
+
+     The filenames below are the ones the page is looking for.
+     Name your files EXACTLY like this — all lowercase, hyphens
+     instead of spaces, .jpg on the end. The live site is fussy
+     about capital letters even though your computer is not.
+
+     Portrait images sit best: 3 wide by 4 tall, around
+     900 x 1200 pixels, saved under 300KB each.
+
+     Nothing breaks while you collect the files. Any image that
+     is missing simply shows the coloured placeholder poster, so
+     you can add them one at a time.
      ============================================================ */
   const WORKS = [
-    { title:'Dusit Thani Abu Dhabi', kind:'Gift voucher',  src:'', tone:['#2F6FA8','#9FC8E8'] },
-    { title:'Dubai & Jordan',        kind:'Tour flyer',    src:'', tone:['#E0A21B','#F6D98A'] },
-    { title:'Wander Sri Lanka',      kind:'Brochure',      src:'', tone:['#1F5F3F','#7FBF95'] },
-    { title:'Sri Lanka Escape',      kind:'Package sheet', src:'', tone:['#2E7D5B','#A8D8BC'] },
-    { title:'F1 Grand Prix',         kind:'Event poster',  src:'', tone:['#A81E1E','#E86A5A'] },
-    { title:'Cape Verde',            kind:'Tour flyer',    src:'', tone:['#1C8C9B','#8FD8DF'] },
-    { title:'60th Anniversary',      kind:'Campaign',      src:'', tone:['#8A6A2A','#E3C98A'] },
-    { title:'Fly with Fida',         kind:'Social set',    src:'', tone:['#3A4E8C','#A9B6E6'] }
+    { title:'Dusit Thani Abu Dhabi', kind:'Gift voucher',  src:'work/dusit-voucher.jpg',  tone:['#2F6FA8','#9FC8E8'] },
+    { title:'Dubai & Jordan',        kind:'Tour flyer',    src:'work/dubai-jordan.jpg',   tone:['#E0A21B','#F6D98A'] },
+    { title:'Wander Sri Lanka',      kind:'Brochure',      src:'work/wander-sri-lanka.jpg', tone:['#1F5F3F','#7FBF95'] },
+    { title:'Sri Lanka Escape',      kind:'Package sheet', src:'work/sri-lanka-escape.jpg', tone:['#2E7D5B','#A8D8BC'] },
+    { title:'F1 Grand Prix',         kind:'Event poster',  src:'work/f1-grand-prix.jpg',  tone:['#A81E1E','#E86A5A'] },
+    { title:'Cape Verde',            kind:'Tour flyer',    src:'work/cape-verde.jpg',     tone:['#1C8C9B','#8FD8DF'] },
+    { title:'60th Anniversary',      kind:'Campaign',      src:'work/60th-anniversary.jpg', tone:['#8A6A2A','#E3C98A'] },
+    { title:'Fly with Fida',         kind:'Social set',    src:'work/fly-with-fida.jpg',  tone:['#3A4E8C','#A9B6E6'] }
   ];
 
   /* ---- build the line ---- */
@@ -2427,28 +2473,43 @@ html.no-js .cw-rail{ display:none; }
     slot.className = 'cw-slot';
     slot.setAttribute('role', 'listitem');
     slot.tabIndex = 0;
-    slot.setAttribute('aria-label', w.title + ' — hold to bring forward');
+    slot.setAttribute('aria-label', w.title + ' — point at it to bring it forward');
 
-    /* resting tilt alternates so the line reads as hand-laid rather
-       than snapped to a rule; the turn speeds are staggered so the
-       row never rotates as one solid block */
-    const rest = (i % 2 ? 1 : -1) * (2.4 + (i * 1.9) % 5.2);
-    slot.style.setProperty('--rest',  rest.toFixed(1) + 'deg');
+    /* Every card sits straight and turns at the same speed, starting
+       at the same moment, so the line reads as one piece rather than
+       eight independent cards.
+
+       --rest  the angle a card sits at when still.  0 = upright.
+       --spin  how long one full turn takes.  Lower = faster.
+       --sd    the delay before a card starts turning.  0 = together.
+
+       To go back to the scattered look, give these an `i`-based
+       value again — see the note under the loop. */
+    slot.style.setProperty('--rest',  '0deg');
+    slot.style.setProperty('--spin',  '5s');
+    slot.style.setProperty('--sd',    '0s');
     slot.style.setProperty('--gr',   ((i % 3) - 1) * (7 + i % 4) + 'deg');
-    slot.style.setProperty('--spin', (4.4 + (i % 4) * 1.05).toFixed(2) + 's');
-    slot.style.setProperty('--sd',   (i * 0.09).toFixed(2) + 's');
     slot.style.setProperty('--d',    (i * 0.07).toFixed(2) + 's');
     slot.style.setProperty('--gz',    String(i + 1));
 
+    /* the placeholder is always drawn; the photograph is laid over
+       the top of it. If the file is missing the image removes
+       itself and the placeholder is revealed, so a typo costs you
+       a poster rather than a broken card. */
+    const placeholder =
+      `<div class="cw-ph" style="--t1:${w.tone[0]};--t2:${w.tone[1]}">
+         <div class="cw-ph-top"><span class="cw-ph-mark">FIDA</span></div>
+         <div class="cw-ph-body">
+           <span class="cw-ph-kind">${w.kind}</span>
+           <span class="cw-ph-title">${w.title}</span>
+         </div>
+       </div>`;
+
     const art = w.src
-      ? `<img src="${w.src}" alt="${w.title}" loading="lazy" draggable="false">`
-      : `<div class="cw-ph" style="--t1:${w.tone[0]};--t2:${w.tone[1]}">
-           <div class="cw-ph-top"><span class="cw-ph-mark">FIDA</span></div>
-           <div class="cw-ph-body">
-             <span class="cw-ph-kind">${w.kind}</span>
-             <span class="cw-ph-title">${w.title}</span>
-           </div>
-         </div>`;
+      ? placeholder +
+        `<img src="${w.src}" alt="${w.title}" loading="lazy"
+              draggable="false" onerror="this.remove()">`
+      : placeholder;
 
     slot.innerHTML =
       `<div class="cw-lift">
@@ -2537,6 +2598,9 @@ html.no-js .cw-rail{ display:none; }
      swipe down the page on a phone still scrolls instead of
      yanking a card out of the line. */
   let held = null, holdTimer = null, downAt = null, tapTimer = null, tapHold = false;
+  /* true while a card is out because the pointer is resting on it,
+     as opposed to being pressed or tapped */
+  let hoverHeld = false;
 
   function hold(slot) {
     if (held === slot) return;
@@ -2551,6 +2615,7 @@ html.no-js .cw-rail{ display:none; }
     clearTimeout(holdTimer);
     clearTimeout(tapTimer);
     tapHold = false;
+    hoverHeld = false;
     if (!held) return;
     held.classList.remove('is-held');
     held = null;
@@ -2558,6 +2623,16 @@ html.no-js .cw-rail{ display:none; }
   }
 
   slots.forEach(slot => {
+    /* ---- hover: pointing at a card is enough to lift it ----
+       Moving from one card straight to the next fires this slot's
+       pointerleave before the next slot's pointerenter, so the
+       handover is clean and only ever one card is out. */
+    slot.addEventListener('pointerenter', e => {
+      if (e.pointerType === 'touch') return;   // phones keep the tap
+      hoverHeld = true;
+      hold(slot);
+    });
+
     slot.addEventListener('pointerdown', e => {
       downAt = { x: e.clientX, y: e.clientY, touch: e.pointerType === 'touch' };
       clearTimeout(holdTimer);
@@ -2573,11 +2648,18 @@ html.no-js .cw-rail{ display:none; }
         tapTimer = setTimeout(() => { tapHold = false; release(); }, 1800);
         return;
       }
+      // a mouse click on a card the pointer is still resting on
+      // should leave it standing, not drop it back into the line
+      if (hoverHeld && held === slot) return;
       release();
     });
 
     slot.addEventListener('pointercancel', release);
-    slot.addEventListener('pointerleave', () => { clearTimeout(holdTimer); });
+    slot.addEventListener('pointerleave', e => {
+      clearTimeout(holdTimer);
+      if (e.pointerType === 'touch') return;
+      if (held === slot) release();
+    });
 
     /* keyboard: space or enter holds for as long as the key is down */
     slot.addEventListener('keydown', e => {
@@ -2599,7 +2681,9 @@ html.no-js .cw-rail{ display:none; }
   /* a release anywhere counts, so a card never sticks up because the
      pointer left the slot mid-hold — except straight after a tap,
      which is holding the card open on purpose */
-  addEventListener('pointerup', () => { if (!tapHold) release(); });
+  addEventListener('pointerup', () => {
+    if (!tapHold && !hoverHeld) release();
+  });
 
   /* ---- the button ----
      Placeholder until the gallery exists: it brings the line of work
