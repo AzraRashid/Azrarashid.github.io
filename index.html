@@ -752,6 +752,64 @@ html{ scroll-snap-type: y mandatory; }
   font-weight:700; letter-spacing:-.028em; line-height:1;
 }
 .wk-nav{ position:absolute; right:4.4%; top:6.4%; text-align:right; z-index:6; }
+
+/* ---- step through the case studies by hand ----
+   The projects hand over on their own every few seconds; these are
+   for anyone who would rather not wait. They sit on the page edges,
+   over the artwork where the card bleeds out that far, so they carry
+   their own pale disc: a bare chevron would vanish into a dark cover.
+   z-index clears the card so the click reaches the button and not
+   the link underneath it. */
+.cs-arrow{
+  position:absolute; top:50%; transform:translateY(-50%);
+  z-index:8;
+  width:clamp(2.6rem, 3.4vw, 3.2rem);
+  height:clamp(2.6rem, 3.4vw, 3.2rem);
+  display:grid; place-items:center;
+  border:1px solid rgba(25,26,28,.14);
+  border-radius:50%;
+  background:rgba(255,255,255,.86);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  box-shadow:0 4px 18px rgba(0,0,0,.18);
+  color:#1C1C1E;
+  cursor:pointer;
+  opacity:.82;
+  transition:opacity .25s ease, background .25s ease,
+             transform .25s ease, box-shadow .25s ease;
+}
+.cs-arrow.prev{ left:clamp(.6rem, 1.6vw, 1.6rem); }
+.cs-arrow.next{ right:clamp(.6rem, 1.6vw, 1.6rem); }
+.cs-arrow svg{
+  width:45%; height:45%;
+  fill:none; stroke:currentColor;
+  stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round;
+}
+.cs-arrow:hover, .cs-arrow:focus-visible{
+  opacity:1; background:#fff;
+  box-shadow:0 6px 22px rgba(0,0,0,.24);
+}
+.cs-arrow.prev:hover, .cs-arrow.prev:focus-visible{ transform:translateY(-50%) translateX(-3px); }
+.cs-arrow.next:hover, .cs-arrow.next:focus-visible{ transform:translateY(-50%) translateX(3px); }
+.cs-arrow:focus-visible{ outline:2px solid var(--ember); outline-offset:3px; }
+.cs-arrow:active{ transform:translateY(-50%) scale(.94); }
+
+/* on a phone the card runs the full width, so the arrows drop to the
+   bottom of the frame rather than sitting on top of the picture */
+@media (max-width: 700px){
+  .cs-arrow{
+    top:auto; bottom:2.4svh; transform:none;
+    width:2.5rem; height:2.5rem;
+  }
+  .cs-arrow.prev{ left:auto; right:calc(50% + 1.1rem); }
+  .cs-arrow.next{ right:calc(50% - 3.6rem); }
+  .cs-arrow.prev:hover, .cs-arrow.prev:focus-visible,
+  .cs-arrow.next:hover, .cs-arrow.next:focus-visible{ transform:none; }
+  .cs-arrow:active{ transform:scale(.94); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .cs-arrow{ transition:none; }
+}
 .wk-nav ul{ list-style:none; display:grid; gap:1.35rem; }
 .wk-nav a{
   color: var(--slate); text-decoration:none;
@@ -976,7 +1034,7 @@ body[data-scene="work"]  .wk-nav    a[href="#work"]{
 .about-nav a[aria-disabled="true"]:hover::after,
 .wk-nav a[aria-disabled="true"]:hover::after{ width:0; }
 
-.hero, .about, .work, .creative{ scroll-snap-align: start; scroll-snap-stop: always; }
+.hero, .about, .work, .creative, .contact{ scroll-snap-align: start; scroll-snap-stop: always; }
 
 /* ---- screen texture. All of it sits under body.crt-off to switch away ---- */
 .fx{ position:fixed; inset:0; pointer-events:none; z-index:300; }
@@ -1617,6 +1675,218 @@ html.no-js .cw-rail{ display:none; }
   .nav-links a, .about-nav a, .wk-nav a{ padding:.25rem 0; display:inline-block; }
 }
 
+
+/* ============================================================
+   CONTACT — the last slide, and the only one after the hero that
+   goes back to the dark. That is deliberate: the page opens on ink
+   and closes on it, so the four pale slides in between read as the
+   body of the thing and this reads as the sign-off. It also means
+   the nav needs no new colour rule — cream is already the default,
+   and only the pale slides override it.
+
+   The background is the hero's own furniture reused rather than
+   rebuilt: the same four drifting grid layers, the same amber haze,
+   the same lightning generator (which now fills every .bolts stage
+   on the page, not just the first).
+   ============================================================ */
+.contact{
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  background: var(--ink);
+  color: var(--cream);
+  display: grid;
+  place-items: center;
+}
+
+/* the decoration is boxed off on its own so it can be clipped
+   without clipping the card stack, which on a small phone is
+   allowed to grow past the height of the screen */
+.ct-fx{ position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none; }
+
+.ct-inner{
+  position: relative; z-index: 5;
+  width: min(1080px, 86vw);
+  padding: clamp(8rem, 21svh, 13rem) 0 clamp(4rem, 11svh, 7rem);
+}
+
+.ct-kicker{
+  font-family: 'Space Mono', monospace;
+  font-size: clamp(.6rem, .78vw, .72rem);
+  letter-spacing: .3em; text-transform: uppercase;
+  color: var(--orange);
+  display: inline-flex; align-items: center; gap: .7rem;
+  margin-bottom: 1.1rem;
+}
+.ct-kicker::before{
+  content:''; width: clamp(1.6rem, 3vw, 2.6rem); height:1px;
+  background: var(--orange); opacity:.7;
+}
+
+.ct-title{
+  font-size: clamp(2.3rem, 6.6vw, 5.2rem);
+  font-weight: 800; line-height: 1.02; letter-spacing: -.032em;
+  margin-bottom: 1rem;
+}
+/* the serif italic is the same face the case study copy uses, so the
+   accent line belongs to the page rather than arriving from nowhere */
+.ct-title em{
+  font-family: 'Newsreader', Georgia, serif;
+  font-style: italic; font-weight: 400;
+  letter-spacing: -.01em;
+  color: var(--orange);
+}
+
+.ct-lede{
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: clamp(.95rem, 1.35vw, 1.25rem);
+  line-height: 1.6;
+  max-width: 46ch;
+  color: rgba(241,239,232,.7);
+  margin-bottom: clamp(2rem, 4.5vh, 3rem);
+}
+
+/* ---- the four ways in ---- */
+.ct-grid{
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(.7rem, 1.4vw, 1.1rem);
+}
+
+.ct-card{
+  position: relative;
+  display: flex; align-items: center; gap: clamp(.8rem, 1.4vw, 1.15rem);
+  padding: clamp(.95rem, 1.5vw, 1.25rem) clamp(1rem, 1.6vw, 1.35rem);
+  border: 1px solid rgba(241,239,232,.11);
+  border-radius: 16px;
+  background: rgba(241,239,232,.035);
+  transition: background .3s ease, border-color .3s ease,
+              transform .3s cubic-bezier(.2,.8,.25,1), box-shadow .3s ease;
+}
+.ct-card:hover,
+.ct-card:focus-within{
+  background: rgba(245,158,11,.075);
+  border-color: rgba(245,158,11,.45);
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.34), 0 0 26px rgba(245,158,11,.13);
+}
+
+.ct-ico{
+  flex: none;
+  width: clamp(2.5rem, 3.1vw, 2.9rem);
+  height: clamp(2.5rem, 3.1vw, 2.9rem);
+  display: grid; place-items: center;
+  border-radius: 12px;
+  background: rgba(245,158,11,.13);
+  color: var(--orange);
+  transition: background .3s ease, color .3s ease;
+}
+.ct-card:hover .ct-ico{ background: rgba(245,158,11,.22); }
+.ct-ico svg{ width: 52%; height: 52%; }
+
+.ct-body{ min-width: 0; }          /* lets the long email wrap instead of
+                                      pushing the copy button off the card */
+.ct-label{
+  display: block;
+  font-family: 'Space Mono', monospace;
+  font-size: .58rem; letter-spacing: .2em; text-transform: uppercase;
+  color: rgba(241,239,232,.5);
+  margin-bottom: .3rem;
+}
+.ct-value{
+  display: block;
+  color: var(--cream); text-decoration: none;
+  font-size: clamp(.82rem, 1.02vw, .98rem);
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+/* the whole card is the target, not just the few words of text —
+   a phone thumb should not have to find a 14px link */
+.ct-value::after{ content:''; position:absolute; inset:0; border-radius:16px; }
+.ct-value:hover{ color: #FFD79A; }
+.ct-card:focus-within{ outline: 2px solid var(--ember); outline-offset: 3px; }
+.ct-value:focus-visible{ outline: none; }
+
+/* ---- copy, for the two worth pasting somewhere ---- */
+.ct-copy{
+  position: relative; z-index: 2;   /* clears the card-wide hit area */
+  flex: none; margin-left: auto;
+  width: 2.1rem; height: 2.1rem;
+  display: grid; place-items: center;
+  border: 1px solid rgba(241,239,232,.16);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--cream);
+  opacity: .55; cursor: pointer;
+  transition: opacity .25s ease, border-color .25s ease, color .25s ease;
+}
+.ct-copy:hover, .ct-copy:focus-visible{ opacity: 1; border-color: rgba(245,158,11,.6); }
+.ct-copy:focus-visible{ outline: 2px solid var(--ember); outline-offset: 2px; }
+.ct-copy svg{ width: 46%; height: 46%; }
+.ct-copy .tick{ display: none; }
+.ct-copy.done{ opacity: 1; color: #7ED9A0; border-color: rgba(126,217,160,.6); }
+.ct-copy.done .sheet{ display: none; }
+.ct-copy.done .tick{ display: block; }
+
+.ct-foot{
+  margin-top: clamp(2rem, 4.5vh, 3rem);
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(241,239,232,.09);
+  display: flex; flex-wrap: wrap; gap: .5rem 1.4rem;
+  justify-content: space-between; align-items: center;
+  font-family: 'Space Mono', monospace;
+  font-size: .62rem; letter-spacing: .16em; text-transform: uppercase;
+  color: rgba(241,239,232,.42);
+}
+.ct-foot a{ color: inherit; text-decoration: none; }
+.ct-foot a:hover{ color: var(--orange); }
+
+/* ---- everything rises as the slide arrives ---- */
+.contact .ct-rise{
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .7s ease var(--d, 0s),
+              transform .7s cubic-bezier(.2,.8,.25,1) var(--d, 0s);
+}
+.contact.in-view .ct-rise{ opacity: 1; transform: none; }
+
+/* ---- narrow ---- */
+@media (max-width: 820px){
+  .ct-grid{ grid-template-columns: 1fr; }
+}
+/* the nav stack is tall on a phone and the copy is centred under it,
+   so the block starts lower down rather than running underneath */
+@media (max-width: 640px){
+  .ct-inner{ width: 88vw; padding: clamp(10.4rem, 28svh, 14rem) 0 2.6rem; }
+  .ct-lede{ margin-bottom: 1.5rem; }
+  .ct-grid{ gap: .6rem; }
+  .ct-card{ padding: .85rem 1rem; }
+  .ct-foot{ margin-top: 1.4rem; padding-top: .9rem;
+            justify-content: flex-start;
+            font-size: .56rem; letter-spacing: .12em; }
+  /* the CRT switch is pinned to this corner on a phone, and Home in
+     the nav already does this link's job, so it steps aside */
+  .ct-foot a{ display: none; }
+}
+@media (max-width: 400px){
+  .ct-card{ gap: .75rem; padding: .9rem 1rem; }
+  .ct-copy{ width: 1.9rem; height: 1.9rem; }
+}
+/* short landscape phones: there is no room for the lede */
+@media (max-height: 520px) and (orientation: landscape){
+  .ct-inner{ padding: 7rem 0 2.5rem; }
+  .ct-lede{ display: none; }
+  .ct-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .contact .ct-rise{ opacity:1; transform:none; transition:none; }
+  .ct-card{ transition: background .2s linear, border-color .2s linear; }
+  .ct-card:hover, .ct-card:focus-within{ transform:none; }
+}
+
+html.no-js .contact .ct-rise{ opacity:1; transform:none; }
+
 /* ============================================================
    SITE NAV — one fixed nav for the whole page
 
@@ -1714,14 +1984,51 @@ body[data-scene="about"]    .site-nav,
 body[data-scene="work"]     .site-nav,
 body[data-scene="creative"] .site-nav{ color: #1C1C1E; }
 
+/* ============================================================
+   CONTRAST — each link reads what is actually behind it
+
+   body[data-scene] colours the nav for the slide as a whole, which
+   is right until something dark drifts underneath one link on an
+   otherwise pale slide: the case study covers are near-black, and
+   ink type on a black photograph is unreadable. The script at the
+   bottom samples the real pixels under each link — background
+   colours, and the cover images themselves off a canvas — and tags
+   the ones sitting on something dark. Those flip to cream; the rest
+   are untouched, so the design is unchanged everywhere it worked.
+
+   The shadow is a hairline, not a glow: enough to hold the letter
+   edges when a link straddles the boundary of a photograph, not
+   enough to read as a drop shadow.
+   ============================================================ */
+.site-nav .nav-links a.on-dark{
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0,0,0,.55);
+}
+.site-nav .nav-links a.on-light{
+  color: #1C1C1E;
+  text-shadow: 0 1px 2px rgba(255,255,255,.5);
+}
+/* the underline needs to clear the darker backing too */
+.site-nav .nav-links a.on-dark::after{ background: #FDBA33; }
+
+/* Contact and Resume are dimmed because their sections do not exist
+   yet. Dimmed cream on a black cover is fainter than dimmed ink on a
+   pale slide, so they are given a little of it back — still clearly
+   the quieter pair, still readable. */
+.site-nav a[aria-disabled="true"].on-dark{ opacity: .5; }
+
 /* ---- the underline marks where you are ---- */
+body[data-scene="hero"]     .site-nav a[href="#hero"],
 body[data-scene="about"]    .site-nav a[href="#about"],
 body[data-scene="work"]     .site-nav a[href="#work"],
-body[data-scene="creative"] .site-nav a[href="#work"]{ opacity: 1; }
+body[data-scene="creative"] .site-nav a[href="#creative"],
+body[data-scene="contact"]  .site-nav a[href="#contact"]{ opacity: 1; }
 
+body[data-scene="hero"]     .site-nav a[href="#hero"]::after,
 body[data-scene="about"]    .site-nav a[href="#about"]::after,
 body[data-scene="work"]     .site-nav a[href="#work"]::after,
-body[data-scene="creative"] .site-nav a[href="#work"]::after{ width: 100%; }
+body[data-scene="creative"] .site-nav a[href="#creative"]::after,
+body[data-scene="contact"]  .site-nav a[href="#contact"]::after{ width: 100%; }
 
 /* ---- anchors with nowhere to go yet ---- */
 .site-nav a[aria-disabled="true"]{ opacity: .34; cursor: not-allowed; }
@@ -1731,6 +2038,11 @@ body[data-scene="creative"] .site-nav a[href="#work"]::after{ width: 100%; }
 /* ---- the boot screen owns the first second and a half ---- */
 html.booting .site-nav{ opacity: 0; }
 .site-nav{ opacity: 1; transition: color .45s ease, opacity .5s ease; }
+
+/* six links instead of four: the stack is taller, so it starts a
+   touch higher and sits a little closer together. Declared before the
+   media queries so the narrow-screen sizes still win. */
+.site-nav .nav-links{ top: 5.4%; gap: 1.25rem; }
 
 /* ---- responsive ---- */
 @media (max-width: 900px){
@@ -1771,8 +2083,10 @@ html.booting .site-nav{ opacity: 0; }
      ============================================================ -->
 <nav class="site-nav" aria-label="Primary">
   <ul class="nav-links">
+    <li><a href="#hero">Home</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#work">Case Studies</a></li>
+    <li><a href="#creative">Creative Work</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#resume">Resume</a></li>
   </ul>
@@ -1814,8 +2128,10 @@ html.booting .site-nav{ opacity: 0; }
   <nav class="nav">
     <a class="brand rise d1" href="#hero">Portfolio</a>
     <ul class="nav-links rise d2">
+      <li><a href="#hero">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#work">Case Studies</a></li>
+      <li><a href="#creative">Creative Work</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#resume">Resume</a></li>
     </ul>
@@ -1879,8 +2195,10 @@ html.booting .site-nav{ opacity: 0; }
 
   <nav class="about-nav">
     <ul>
+      <li><a href="#hero">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#work">Case Studies</a></li>
+      <li><a href="#creative">Creative Work</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#resume">Resume</a></li>
     </ul>
@@ -1960,10 +2278,20 @@ html.booting .site-nav{ opacity: 0; }
 
   <h2 class="wk-head">CASE STUDIES</h2>
 
+  <!-- step through the case studies by hand, either direction -->
+  <button class="cs-arrow prev" type="button" aria-label="Previous case study">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 L7 12 L15 20"/></svg>
+  </button>
+  <button class="cs-arrow next" type="button" aria-label="Next case study">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 L17 12 L9 20"/></svg>
+  </button>
+
   <nav class="wk-nav">
     <ul>
+      <li><a href="#hero">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#work">Case Studies</a></li>
+      <li><a href="#creative">Creative Work</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#resume">Resume</a></li>
     </ul>
@@ -2129,12 +2457,12 @@ html.booting .site-nav{ opacity: 0; }
   <!-- the glowing stroke the pen leaves behind -->
   <canvas class="cw-ink" aria-hidden="true"></canvas>
 
-  <span class="cw-brand">Portfolio</span>
-
   <nav class="wk-nav">
     <ul>
+      <li><a href="#hero">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#work">Case Studies</a></li>
+      <li><a href="#creative">Creative Work</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="#resume">Resume</a></li>
     </ul>
@@ -2166,6 +2494,144 @@ html.booting .site-nav{ opacity: 0; }
   <div class="cw-rail" role="list" aria-label="Creative work"></div>
 </section>
 
+<!-- ============================================================
+     CONTACT — the sign-off. Back to ink, with the hero's own grid,
+     haze and lightning behind it. Every card is a live link: the
+     email opens a mail client, the number dials on a phone, the two
+     profiles open in a new tab. The small disc on the first two
+     copies the value instead, for when you are on a desktop and
+     just want it on the clipboard.
+     ============================================================ -->
+<section class="contact" id="contact">
+
+  <div class="ct-fx" aria-hidden="true">
+    <div class="grid g-h-up"></div>
+    <div class="grid g-h-down"></div>
+    <div class="grid g-v-right"></div>
+    <div class="grid g-v-left"></div>
+    <div class="aura a"></div>
+    <div class="aura b"></div>
+    <div class="bolts"></div>
+  </div>
+
+  <div class="ct-inner">
+    <p class="ct-kicker ct-rise" style="--d:.05s">Get in touch</p>
+
+    <h2 class="ct-title ct-rise" style="--d:.12s">
+      Let&rsquo;s make<br><em>something good.</em>
+    </h2>
+
+    <p class="ct-lede ct-rise" style="--d:.2s">
+      A project, a role, or a question about any of the work above &mdash;
+      all four of these reach me directly, and I answer to all of them.
+    </p>
+
+    <ul class="ct-grid">
+
+      <li class="ct-rise" style="--d:.28s">
+        <div class="ct-card">
+          <span class="ct-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/>
+              <path d="M3 7 l9 6.5 L21 7"/>
+            </svg>
+          </span>
+          <span class="ct-body">
+            <span class="ct-label">Email</span>
+            <a class="ct-value" href="mailto:azrarashiduae1210@gmail.com">azrarashiduae1210@gmail.com</a>
+          </span>
+          <button class="ct-copy" type="button" data-copy="azrarashiduae1210@gmail.com"
+                  aria-label="Copy email address">
+            <svg class="sheet" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="11" height="12" rx="2"/>
+              <path d="M5 15 V5 a2 2 0 0 1 2-2 h8"/>
+            </svg>
+            <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12.5 L9.5 18 L20 6.5"/>
+            </svg>
+          </button>
+        </div>
+      </li>
+
+      <li class="ct-rise" style="--d:.34s">
+        <div class="ct-card">
+          <span class="ct-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6.5 3 h3 l1.6 4.2 -2.1 1.5 a12 12 0 0 0 6.3 6.3 l1.5 -2.1 4.2 1.6 v3
+                       a2 2 0 0 1 -2.2 2 A17.5 17.5 0 0 1 4.5 5.2 2 2 0 0 1 6.5 3 z"/>
+            </svg>
+          </span>
+          <span class="ct-body">
+            <span class="ct-label">Phone</span>
+            <a class="ct-value" href="tel:+971581720725">+971 581720725</a>
+          </span>
+          <button class="ct-copy" type="button" data-copy="+971 581720725"
+                  aria-label="Copy phone number">
+            <svg class="sheet" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="11" height="12" rx="2"/>
+              <path d="M5 15 V5 a2 2 0 0 1 2-2 h8"/>
+            </svg>
+            <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12.5 L9.5 18 L20 6.5"/>
+            </svg>
+          </button>
+        </div>
+      </li>
+
+      <li class="ct-rise" style="--d:.4s">
+        <div class="ct-card">
+          <span class="ct-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="3.5"/>
+              <path d="M7.5 10.5 v6"/>
+              <circle cx="7.5" cy="7.6" r="1.05" fill="currentColor" stroke="none"/>
+              <path d="M11.6 16.5 v-6 M11.6 12.8 a2.7 2.7 0 0 1 4.9 1.6 v2.1"/>
+            </svg>
+          </span>
+          <span class="ct-body">
+            <span class="ct-label">LinkedIn</span>
+            <a class="ct-value" href="https://www.linkedin.com/in/azra-rashid/" target="_blank" rel="noopener noreferrer">
+              /in/azra-rashid
+            </a>
+          </span>
+        </div>
+      </li>
+
+      <li class="ct-rise" style="--d:.46s">
+        <div class="ct-card">
+          <span class="ct-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="5.2"/>
+              <circle cx="12" cy="12" r="4"/>
+              <circle cx="17.2" cy="6.8" r="1.05" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span class="ct-body">
+            <span class="ct-label">Instagram</span>
+            <a class="ct-value" href="https://www.instagram.com/azrarashid_01/" target="_blank" rel="noopener noreferrer">
+              @Azrarashid_01
+            </a>
+          </span>
+        </div>
+      </li>
+
+    </ul>
+
+    <p class="ct-foot ct-rise" style="--d:.54s">
+      <span>Azra Rashid &mdash; UI/UX Designer</span>
+      <a href="#hero">Back to top &uarr;</a>
+    </p>
+  </div>
+</section>
+
 
 <script>
 /* ------------------------------------------------------------
@@ -2175,8 +2641,11 @@ html.booting .site-nav{ opacity: 0; }
    Change the counts in BOLTS to add or thin out the effect.
    ------------------------------------------------------------ */
 (function () {
-  const stage = document.querySelector('.bolts');
-  if (!stage || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  /* there are two stages now — the hero and the contact slide — so
+     each gets its own randomised set rather than the hero taking the
+     only one that was ever built */
+  const stages = [...document.querySelectorAll('.bolts')];
+  if (!stages.length || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
   const BOLTS = [
     // axis, variant, how many, slowest→fastest cycle in seconds
@@ -2189,6 +2658,8 @@ html.booting .site-nav{ opacity: 0; }
   ];
 
   const rand = (min, max) => min + Math.random() * (max - min);
+
+  stages.forEach(stage => {
   const frag = document.createDocumentFragment();
 
   BOLTS.forEach(({ axis, variant, count, dur }) => {
@@ -2216,6 +2687,7 @@ html.booting .site-nav{ opacity: 0; }
   });
 
   stage.appendChild(frag);
+  });
 })();
 </script>
 
@@ -2354,7 +2826,7 @@ html.booting .site-nav{ opacity: 0; }
    SLIDE CHROME
    ------------------------------------------------------------ */
 (function () {
-  const slides = [...document.querySelectorAll('.hero, .about, .work, .creative')];
+  const slides = [...document.querySelectorAll('.hero, .about, .work, .creative, .contact')];
 
   /* which slide is on screen -> recolours the chrome.
      Measured by which slide covers the middle of the screen, not by
@@ -2511,6 +2983,36 @@ html.booting .site-nav{ opacity: 0; }
     if (e.key === 'ArrowRight') { e.preventDefault(); show(index + 1); arm(HOLD); }
     if (e.key === 'ArrowLeft')  { e.preventDefault(); show(index - 1); arm(HOLD); }
   });
+
+  /* the two arrows do the same thing by hand. Stepping restarts the
+     clock rather than leaving the old one to fire a moment later —
+     otherwise a click could be undone half a second after it lands. */
+  function step(dir) {
+    paused = false;              // a deliberate step un-sticks the clock
+    show(index + dir);
+    arm(HOLD);
+  }
+  const prevBtn = work.querySelector('.cs-arrow.prev');
+  const nextBtn = work.querySelector('.cs-arrow.next');
+  if (prevBtn) prevBtn.addEventListener('click', () => step(-1));
+  if (nextBtn) nextBtn.addEventListener('click', () => step(1));
+
+  /* a swipe across the card does it too, on a phone */
+  let x0 = null, y0 = null;
+  work.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) { x0 = null; return; }
+    x0 = e.touches[0].clientX;
+    y0 = e.touches[0].clientY;
+  }, { passive: true });
+  work.addEventListener('touchend', e => {
+    if (x0 === null) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - x0, dy = t.clientY - y0;
+    x0 = null;
+    /* horizontal, and clearly so — a vertical drag is the visitor
+       scrolling the page, not asking for the next project */
+    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.6) step(dx < 0 ? 1 : -1);
+  }, { passive: true });
 })();
 </script>
 
@@ -3169,6 +3671,255 @@ html.booting .site-nav{ opacity: 0; }
       history.replaceState(null, '', location.pathname + location.search);
     });
   }
+})();
+</script>
+
+<script>
+/* ------------------------------------------------------------
+   NAV CONTRAST — read what is really behind each link
+
+   body[data-scene] paints the whole nav one colour per slide. That
+   is right for a slide with an even background and wrong the moment
+   something dark passes under a single link: on the Case Studies
+   slide the covers are near-black and reach the right edge of the
+   page, so the ink-coloured links land on a black photograph and
+   disappear.
+
+   So the colour is decided per link, from the page itself:
+
+   1. elementsFromPoint gives the stack under the link (the nav
+      itself is skipped — it must not sample its own transparency).
+   2. The first element with an opaque-enough background colour
+      decides it. If a cover image is reached first, the image is
+      drawn once into a small offscreen canvas and the pixels under
+      the link are averaged. Both are same-origin data URIs, so the
+      canvas stays readable.
+   3. Below about half brightness the link turns cream, above it the
+      link is left to the stylesheet.
+
+   Three points are sampled across each link, not one, because a
+   link can straddle the edge of a picture; the darkest wins, since
+   that is the half that would have been unreadable.
+   ------------------------------------------------------------ */
+(function () {
+  const nav = document.querySelector('.site-nav');
+  if (!nav) return;
+  const links = [...nav.querySelectorAll('.nav-links a')];
+  if (!links.length) return;
+
+  const canvases = new WeakMap();   // <img> -> tiny readable copy
+
+  /* a scaled-down copy of the image we can read pixels from. 96px
+     is plenty: we want the average tone of a patch, not detail. */
+  function sheetFor(img) {
+    if (canvases.has(img)) return canvases.get(img);
+    let sheet = null;
+    try {
+      if (img.complete && img.naturalWidth) {
+        const w = 96;
+        const h = Math.max(1, Math.round(w * img.naturalHeight / img.naturalWidth));
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d', { willReadFrequently: true }).drawImage(img, 0, 0, w, h);
+        sheet = c;
+      }
+    } catch (err) {
+      sheet = null;                 // tainted or not decoded — fall back
+    }
+    if (sheet || (img.complete && img.naturalWidth)) canvases.set(img, sheet);
+    return sheet;
+  }
+
+  /* the average brightness of the image under a page point.
+     object-fit:cover crops, so the point is mapped through the same
+     crop the browser applied rather than straight onto the box. */
+  function imageLuma(img, x, y) {
+    const sheet = sheetFor(img);
+    if (!sheet) return null;
+    const r = img.getBoundingClientRect();
+    if (!r.width || !r.height) return null;
+
+    const fit = getComputedStyle(img).objectFit;
+    let u = (x - r.left) / r.width;
+    let v = (y - r.top) / r.height;
+
+    if (fit === 'cover' || fit === 'contain') {
+      const boxAR = r.width / r.height;
+      const imgAR = img.naturalWidth / img.naturalHeight;
+      const wide = (fit === 'cover') ? imgAR > boxAR : imgAR < boxAR;
+      if (wide) {                    // cropped left and right
+        const shown = boxAR / imgAR;
+        u = 0.5 + (u - 0.5) * shown;
+      } else {                       // cropped top and bottom
+        const shown = imgAR / boxAR;
+        v = 0.5 + (v - 0.5) * shown;
+      }
+    }
+    if (u < 0 || u > 1 || v < 0 || v > 1) return null;
+
+    const px = Math.min(sheet.width  - 1, Math.max(0, Math.round(u * sheet.width)));
+    const py = Math.min(sheet.height - 1, Math.max(0, Math.round(v * sheet.height)));
+    const rad = 3;
+    const sx = Math.max(0, px - rad), sy = Math.max(0, py - rad);
+    const sw = Math.min(sheet.width  - sx, rad * 2 + 1);
+    const sh = Math.min(sheet.height - sy, rad * 2 + 1);
+    try {
+      const d = sheet.getContext('2d', { willReadFrequently: true })
+                     .getImageData(sx, sy, sw, sh).data;
+      let sum = 0, n = 0;
+      for (let i = 0; i < d.length; i += 4) {
+        sum += (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
+        n++;
+      }
+      return n ? sum / n : null;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function colourLuma(str) {
+    const m = str && str.match(/rgba?\(([^)]+)\)/);
+    if (!m) return null;
+    const p = m[1].split(',').map(Number);
+    if (p.length > 3 && p[3] < 0.55) return null;   // too sheer to count
+    return (0.2126 * p[0] + 0.7152 * p[1] + 0.0722 * p[2]) / 255;
+  }
+
+  /* walk the stack under one point, top first, and take the first
+     surface solid enough to decide the answer */
+  function lumaAt(x, y) {
+    const stack = document.elementsFromPoint(x, y);
+    for (const el of stack) {
+      if (el.closest('.site-nav')) continue;        // never sample ourselves
+      if (el.tagName === 'IMG') {
+        const l = imageLuma(el, x, y);
+        if (l !== null) return l;
+        continue;
+      }
+      const l = colourLuma(getComputedStyle(el).backgroundColor);
+      if (l !== null) return l;
+    }
+    return null;
+  }
+
+  function paint() {
+    for (const a of links) {
+      const r = a.getBoundingClientRect();
+      if (!r.width || r.bottom < 0 || r.top > innerHeight) continue;
+      const y = r.top + r.height / 2;
+      const xs = [r.left + 3, r.left + r.width / 2, r.right - 3];
+
+      let darkest = null;
+      for (const x of xs) {
+        const l = lumaAt(x, y);
+        if (l !== null && (darkest === null || l < darkest)) darkest = l;
+      }
+      if (darkest === null) { a.classList.remove('on-dark'); continue; }
+      a.classList.toggle('on-dark', darkest < 0.48);
+    }
+  }
+
+  /* one pass per frame at most, and only when something moved */
+  let queued = 0;
+  function queue() {
+    if (queued) return;
+    queued = requestAnimationFrame(() => { queued = 0; paint(); });
+  }
+
+  addEventListener('scroll', queue, { passive: true });
+  addEventListener('resize', queue, { passive: true });
+  addEventListener('load', () => { queue(); setTimeout(queue, 400); });
+
+  /* the case studies hand over on a timer, so the thing behind the
+     nav changes with no scroll and no resize to react to. The class
+     swap on the panels is the signal. */
+  const work = document.querySelector('.work');
+  if (work) {
+    new MutationObserver(queue).observe(work, {
+      subtree: true, attributes: true, attributeFilter: ['class']
+    });
+  }
+  /* and the creative rail moves under its own animation */
+  const creative = document.querySelector('.creative');
+  if (creative) {
+    new MutationObserver(queue).observe(creative, {
+      subtree: true, attributes: true, attributeFilter: ['class', 'style']
+    });
+  }
+
+  /* a slow heartbeat catches anything neither of those covers —
+     a cover finishing its decode, a font settling the layout */
+  setInterval(queue, 900);
+  queue();
+})();
+</script>
+
+<script>
+/* ------------------------------------------------------------
+   CONTACT
+   Two small jobs.
+
+   1. The block rises as the slide arrives. Same idea as the About
+      cards: a class on the section, the stagger held in CSS custom
+      properties on each child, so the order can be changed by
+      editing one number in the markup.
+   2. The disc on the email and phone cards copies the value. The
+      card itself stays a live link — a tap on a phone should open
+      the mail app or the dialler, which is what a thumb expects —
+      so copying is the separate, smaller target beside it.
+   ------------------------------------------------------------ */
+(function () {
+  const sec = document.querySelector('.contact');
+  if (!sec) return;
+
+  /* once it has arrived it stays arrived; scrolling back up and down
+     again should not replay the entrance */
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) { sec.classList.add('in-view'); io.disconnect(); }
+    });
+  }, { threshold: 0.22 });
+  io.observe(sec);
+
+  /* clipboard, with a fallback for pages served over file:// and for
+     older browsers, where navigator.clipboard is not available */
+  function copy(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    return new Promise((resolve, reject) => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      let ok = false;
+      try { ok = document.execCommand('copy'); } catch (err) { ok = false; }
+      document.body.removeChild(ta);
+      ok ? resolve() : reject(new Error('copy failed'));
+    });
+  }
+
+  sec.querySelectorAll('.ct-copy').forEach(btn => {
+    let clear = null;
+    btn.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      copy(btn.dataset.copy).then(() => {
+        btn.classList.add('done');
+        btn.setAttribute('aria-label', 'Copied');
+        clearTimeout(clear);
+        clear = setTimeout(() => {
+          btn.classList.remove('done');
+          btn.setAttribute('aria-label', btn.dataset.copy.includes('@')
+            ? 'Copy email address' : 'Copy phone number');
+        }, 1800);
+      }).catch(() => {
+        /* nothing to do but leave the link, which still works */
+      });
+    });
+  });
 })();
 </script>
 
