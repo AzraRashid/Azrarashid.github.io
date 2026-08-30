@@ -2487,7 +2487,7 @@ html.booting .site-nav{ opacity: 0; }
   </div>
 
   <div class="cw-cta-wrap">
-    <button class="cw-cta" type="button">View Creativity</button>
+    <a class="cw-cta" href="creativity.html">View Creativity</a>
   </div>
 
   <!-- cards are inserted here by the script -->
@@ -3388,12 +3388,7 @@ html.booting .site-nav{ opacity: 0; }
      Placeholder until the gallery exists: it brings the line of work
      forward. Once the full creative gallery is built this is where it
      opens from — swap the body of the handler then, not the markup. */
-  const cta = sec.querySelector('.cw-cta');
-  cta.addEventListener('click', () => {
-    rail.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    sec.classList.add('cw-hot');
-    setTimeout(() => sec.classList.remove('cw-hot'), 2600);
-  });
+
 })();
 </script>
 
