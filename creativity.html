@@ -662,8 +662,12 @@ html.no-js .gx-nojs{ display:block; }
             'Photography'. Spell it exactly as it appears in
             CATEGORIES above.
      src    path to the file, e.g. 'work/cape-verde.jpg'
-     ar     shape of the picture: '3/4' tall, '1/1' square,
-            '4/3' wide, '9/16' a phone story
+     ar     shape of the picture. The frame is cut to this shape
+            and the image fills it, so anything that does not
+            match gets cropped. Safest is the file's own pixel
+            size: a 900x1200 file is ar:'900/1200'. The tidy
+            shorthands still work when they happen to be exact:
+            '3/4' tall, '1/1' square, '4/3' wide, '9/16' story.
      note   one line about the job. Shown on the light table.
      tone   the two colours of the stand-in poster
    ============================================================ */
@@ -691,47 +695,47 @@ const PIECES = [
     note:'A refined anniversary identity built around a bold 60-year mark, elegant gold detailing, and subtle travel cues that celebrate six decades of journey and growth.' },
 
   { title:'Dubai & Jordan', kind:'Travel E-Flyer', cat:'Graphic Design',
-    src:'Img/Jordan.jpeg', ar:'4/3', tone:['#B2531C','#F2B77E'],
+    src:'Img/Jordan.jpeg', ar:'160/113', tone:['#B2531C','#F2B77E'],
     note:'Promotional layout for a multi-destination travel package — a bold two-weight headline lockup, offset image cards, and dotted flight-path motifs unifying two very different landscapes in one frame.' },
 
   { title:'After Dark', kind:'Nightlight Scape', cat:'Photography',
-    src:'Img/Lake.jpg', ar:'4/3', tone:['#28486F','#8FAFD6'],
+    src:'Img/Lake.jpg', ar:'3/4', tone:['#28486F','#8FAFD6'],
     note:'Finding rhythm in the contrast between a restless sky and the quiet geometry below.' },
 
   { title:'Editorial Poster', kind:'Minimal Design', cat:'Graphic Design',
-    src:'Img/Instagram post - 29.png', ar:'1/1', tone:['#3A4E8C','#A9B6E6'],
+    src:'Img/Instagram post - 29.png', ar:'4/5', tone:['#3A4E8C','#A9B6E6'],
     note:'A visual exploration of minimalism, where every element has a purpose.' },
 
   { title:'Islamic Year', kind:'Social Media Post', cat:'Graphic Design',
-    src:'Img/Social Media Post.png', ar:'1/1', tone:['#2F5D50','#9AC9B8'],
+    src:'Img/Social Media Post.png', ar:'116/143', tone:['#2F5D50','#9AC9B8'],
     note:'A contemporary visual interpretation of the Islamic New Year, blending cultural tradition with modern visual storytelling.' },
 
   { title:'Gift Voucher', kind:'Voucher', cat:'Graphic Design',
-    src:'Img/Royal.png', ar:'4/5', tone:['#C0392B','#F0A08E'],
+    src:'Img/Royal.png', ar:'847/1200', tone:['#C0392B','#F0A08E'],
     note:'A refined voucher system, balancing elegant typography, thoughtful detailing, and a flexible layout designed to feel special in every hand.' },
 
   { title:'Glimspse of Dubai', kind:'Travel Flyer', cat:'Graphic Design',
-    src:'Img/Glimpse.png', ar:'3/4', tone:['#2F6FA8','#9FC8E8'],
+    src:'Img/Glimpse.png', ar:'53/75', tone:['#2F6FA8','#9FC8E8'],
     note:'A single-page travel itinerary built on a warm desert gradient, layering an angled three-day timeline, a tiered pricing matrix, and optional-tour modules into one scannable hierarchy without losing the display-type impact of the header.' },
 
   { title:'Turkey Package', kind:'Travel E-Flyer', cat:'Graphic Design',
-    src:'Img/E-Flyer Turkey.png', ar:'4/3', tone:['#1F4E6B','#7FB2CE'],
+    src:'Img/E-Flyer Turkey.png', ar:'1/1', tone:['#1F4E6B','#7FB2CE'],
     note:'A travel-focused e-flyer combining destination imagery with engaging visual communication.' },
 
   { title:'Sunset Scape', kind:'Photography', cat:'Photography',
-    src:'Img/Task.png', ar:'1/1', tone:['#7A5230','#D8B48C'],
+    src:'Img/Task.png', ar:'4/5', tone:['#7A5230','#D8B48C'],
     note:'A visual exploration of warmth, shadows, and the beauty of fleeting moments.' },
 
   { title:'Sri Lanka Escape', kind:'Social Media Post', cat:'Graphic Design',
-    src:'Img/Srilanka.png', ar:'4/5', tone:['#1F5F3F','#7FBF95'],
+    src:'Img/Srilanka.png', ar:'851/1200', tone:['#1F5F3F','#7FBF95'],
     note:'A destination-focused travel poster combining immersive Sri Lankan imagery, editorial typography, and earthy tones to create an inviting visual story around adventure and discovery.' },
 
   { title:'AFC Event', kind:'Event Poster', cat:'Graphic Design',
-    src:'Img/AFC.png', ar:'3/4', tone:['#4A4A52','#B8B8C0'],
+    src:'Img/AFC.png', ar:'847/1200', tone:['#4A4A52','#B8B8C0'],
     note:'Translating the excitement of the Asian Cup into visual form.' },
 
   { title:'Travel Egypt & Jordan', kind:'Travel E-Flyer', cat:'Graphic Design',
-    src:'Img/Egypt – Jordan.png', ar:'9/16', tone:['#8C3A6B','#E3A6C8'],
+    src:'Img/Egypt – Jordan.png', ar:'595/842', tone:['#8C3A6B','#E3A6C8'],
     note:'A visual journey through the ancient wonders, rich culture, and timeless beauty of Egypt and Jordan.' }
 ];
 </script>
